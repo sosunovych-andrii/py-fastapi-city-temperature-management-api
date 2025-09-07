@@ -30,6 +30,14 @@ def upgrade() -> None:
     op.drop_index(op.f('ix_city_id'), table_name='city')
     op.drop_constraint(None, 'temperature', type_='foreignkey')
     op.create_foreign_key(None, 'temperature', 'city', ['city_id'], ['id'], ondelete='CASCADE')
+
+    op.alter_column(
+        'temperature',
+        'temperature',
+        existing_type=sa.Integer(),   # old type
+        type_=sa.Float(),             # new type, maps to REAL in SQLite
+        existing_nullable=False       # preserve nullability
+    )
     # ### end Alembic commands ###
 
 
