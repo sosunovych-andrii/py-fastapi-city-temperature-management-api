@@ -57,17 +57,18 @@ async def update_temperatures(db: AsyncSession) -> int:
     return cities_updated
 
 
-async def get_temperatures(db: AsyncSession) -> list[TemperatureModel]:
-    result = await db.execute(select(TemperatureModel))
+async def get_temperatures(db: AsyncSession, city_id: int) -> list[TemperatureModel]:
+    query = select(TemperatureModel)
+    if city_id is not None:
+        query = query.where(TemperatureModel.city_id == city_id)
+    result = await db.execute(query)
+
     temperatures = result.scalars().all()
     return temperatures
 
 
-async def get_temperature(temp_id: int, city_id: int, db: AsyncSession) -> TemperatureModel:
-    query = select(TemperatureModel).where(TemperatureModel.id == temp_id)
-    if city_id is not None:
-        query = query.where(TemperatureModel.city_id == city_id)
-    result = await db.execute(query)
+async def get_temperature(temp_id: int, db: AsyncSession) -> TemperatureModel:
+    result = await db.execute(select(TemperatureModel).where(TemperatureModel.id == temp_id))
 
     temperature = result.scalar_one_or_none()
     if not temperature:

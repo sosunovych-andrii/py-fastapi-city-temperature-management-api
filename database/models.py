@@ -30,7 +30,7 @@ class TemperatureModel(Base):
 
     id: Mapped[int] = mapped_column(primary_key=True)
     date_time: Mapped[datetime]
-    temperature: Mapped[int]
+    temperature: Mapped[float]
 
     city_id: Mapped[int] = mapped_column(
         ForeignKey("city.id", ondelete="CASCADE")
